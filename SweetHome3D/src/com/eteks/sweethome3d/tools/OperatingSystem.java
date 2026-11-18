@@ -33,7 +33,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import com.apple.eio.FileManager;
 import com.eteks.sweethome3d.model.Home;
 
 /**
@@ -433,7 +432,8 @@ public class OperatingSystem {
   public static File getDefaultApplicationFolder() throws IOException {
     File userApplicationFolder; 
     if (isMacOSX()) {
-      userApplicationFolder = new File(MacOSXFileManager.getApplicationSupportFolder());
+      userApplicationFolder = new File(System.getProperty("user.home"),
+          "Library" + File.separator + "Application Support");
     } else if (isWindows()) {
       userApplicationFolder = new File(System.getProperty("user.home"), "Application Data");
       // If user Application Data directory doesn't exist, use user home
@@ -448,17 +448,4 @@ public class OperatingSystem {
         EDITOR_SUB_FOLDER + File.separator + APPLICATION_SUB_FOLDER);
   }
 
-  /**
-   * File manager class that accesses to Mac OS X specifics.
-   * Do not invoke methods of this class without checking first if 
-   * <code>os.name</code> System property is <code>Mac OS X</code>.
-   * This class requires some classes of <code>com.apple.eio</code> package  
-   * to compile.
-   */
-  private static class MacOSXFileManager {
-    public static String getApplicationSupportFolder() throws IOException {
-      // Find application support folder (0x61737570) for user domain (-32763)
-      return FileManager.findFolder((short)-32763, 0x61737570);
-    }
-  }
 }
